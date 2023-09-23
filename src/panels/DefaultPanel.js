@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   Panel,
@@ -10,24 +10,94 @@ import {
   Cell,
 } from "@vkontakte/vkui";
 
-const DefaultPanel = ({ id, go, fetchedUser }) => {
+import { addGroup } from "../bridge-method";
+
+const DefaultPanel = ({
+  id,
+  go,
+  openAlertPay,
+  setActivePanel,
+  snackbar,
+  getPlatform,
+  fetchedUser,
+  getGroupId,
+}) => {
+  // useEffect(() => {
+  //   addGroup(true, openAlertPay);
+  // },[])
+
   return (
-    <Panel id={id} separator={false}>
-      <PanelHeader>Какой ты хряк</PanelHeader>;
+    <Panel id={id}>
+      <PanelHeader
+        left={
+          <>
+            {fetchedUser && (
+              <>
+                {[441494361, 73606509].includes(fetchedUser.id) ? (
+                  <Button
+                    onClick={() => setActivePanel("admin-panel")}
+                    style={{
+                      width: "150px",
+                      height: "30px",
+                      backgroundColor: "#165df5",
+                      borderRadius: "15px",
+                      marginLeft: "10px",
+                    }}
+                  >
+                    Админ панель
+                  </Button>
+                ) : (
+                  ""
+                )}
+              </>
+            )}
+          </>
+        }
+      ></PanelHeader>
       <Div
         style={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          marginTop: "50px",
-          fontWeight: "bold",
-          fontSize: "40px",
-          //   width: "300px",
+          marginTop: "150px",
         }}
       >
-        <Div>Хотите подписаться на наше сообщество?</Div>
+        {getPlatform === "web" ? (
+          <Div
+            style={{
+              fontWeight: "bold",
+              fontSize: "25px",
+              margin: "0px 10px 0px 10px",
+            }}
+          >
+            Хотите подписаться на наше сообщество?
+          </Div>
+        ) : (
+          <>
+            <Div
+              style={{
+                fontWeight: "bold",
+                fontSize: "25px",
+                margin: "0px 10px 0px 10px",
+              }}
+            >
+              Хотите подписаться на
+            </Div>
+            <Div
+              style={{
+                fontWeight: "bold",
+                fontSize: "25px",
+                margin: "0px 10px 0px 10px",
+              }}
+            >
+              наше сообщество?
+            </Div>
+          </>
+        )}
+
         <Button
+          onClick={() => addGroup(openAlertPay, setActivePanel, getGroupId)}
           style={{
             width: "200px",
             height: "80px",
@@ -36,9 +106,17 @@ const DefaultPanel = ({ id, go, fetchedUser }) => {
             borderRadius: "45px",
           }}
         >
-          Подписаться
+          <span
+            style={{
+              color: "white",
+              fontSize: "20px",
+            }}
+          >
+            Подписаться
+          </span>
         </Button>
       </Div>
+      {snackbar}
     </Panel>
   );
 };
